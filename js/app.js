@@ -994,8 +994,10 @@ ScopaApplication.prototype.onResize = function(e)
         var w = document.documentElement.clientWidth;
         var h = document.documentElement.clientHeight;
         
-        var ch = Math.min(h/4.5, settings.types_of_cards[settings.cards].h)
-        this.graphicsManager.setCardHeight(ch);
+        var ch = Math.min(h/4.5, settings.types_of_cards[settings.cards].h);
+        if (Math.abs(ch - this.graphicsManager.ch) > 2) {
+            this.graphicsManager.setCardHeight(ch);
+        }
         
         css = `:root {
                 --w: ${w}px;

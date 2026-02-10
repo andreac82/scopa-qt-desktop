@@ -1,3 +1,10 @@
-.directory 
+.directory
 **/build/
 /tests.html
+.DS_Store
+**/.DS_Store
+qt-application/*.stash
+qt-application/Makefile
+qt-application/*.o
+qt-application/scopa.app
+qt-application/moc_*

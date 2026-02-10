@@ -69,7 +69,7 @@ all: build/bin/scopa $(STATIC_FILES)
 
 build/bin/scopa: qt-application/scopa
 	mkdir -p build/bin
-	cp qt-application/scopa build/bin/scopa
+	cp qt-application/scopa.app/Contents/MacOS/scopa build/bin/scopa
 
 qt-application/scopa: $(SRC) qt-application/scopa.pro
 	cd qt-application; qmake scopa.pro; make

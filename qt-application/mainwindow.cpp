@@ -20,6 +20,7 @@
  */
 
 #include "mainwindow.h"
+#include <QDir>
 
 MainWindow::MainWindow(QApplication* app)
 {
@@ -29,7 +30,9 @@ MainWindow::MainWindow(QApplication* app)
     
     view.setPage(page);
     
-    page->load(QUrl::fromLocalFile(app->applicationDirPath()+"/../share/scopa/index.html"));
+    //page->load(QUrl::fromLocalFile(QDir::currentPath() + "/index.html"));
+    QString basePath = QCoreApplication::applicationDirPath() + "/../../../../index.html";
+    page->load(QUrl::fromLocalFile(basePath));
     
     QObject::connect(&view, SIGNAL(titleChanged(QString)),
                      this, SLOT(setWindowTitle(QString)));

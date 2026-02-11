@@ -97,9 +97,9 @@ var global_variables = {
     suits: "dcbs",
     notifications_duration: 5,
     animation_duration: {
-        slow: 1.5,
-        medium: 1,
-        fast: 0.7
+        slow: 1.0,
+        medium: 0.7,
+        fast: 0.5
     }
 }
 

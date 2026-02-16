@@ -507,6 +507,10 @@ ScopaApplication = function()
         }
         app.showDialog("new-game");
     });
+
+    document.querySelector("#match-log-item").addEventListener("click", function() {
+        showMatchLog();
+    });
     
     document.querySelector("#online-item").addEventListener("click", function(event) {
         menu.hidden = true;
@@ -1367,6 +1371,35 @@ ScopaApplication.prototype.analyze = function(response)
             return;
         }
         
+        if (response.infos[i].info === "winner") {
+
+            var winnerName = response.infos[i].data[0];
+
+            // Get current total score from the summary table
+            var totalRow = document.querySelector("#total");
+            var scoreText = "unknown";
+
+            if (totalRow) {
+                var cells = totalRow.querySelectorAll("td");
+                if (cells.length >= 3) {
+                    var team1 = cells[1].textContent.trim();
+                    var team2 = cells[2].textContent.trim();
+                    scoreText = team1 + "-" + team2;
+                }
+            }
+
+            const entry = {
+                timestamp: new Date().toISOString(),
+                winner: winnerName,
+                score: scoreText
+            };
+
+            let log = JSON.parse(localStorage.getItem("matchLog") || "[]");
+            log.push(entry);
+            localStorage.setItem("matchLog", JSON.stringify(log));
+        }
+
+
         if (response.infos[i].info === "winner")
         {
             var string = this.getLocaleString("winner").format(response.infos[i].data);
@@ -1527,3 +1560,23 @@ window.onload = function() {
 
     app.showDialog("new-game");
 }
+
+window.showMatchLog = function() {
+    let log = JSON.parse(localStorage.getItem("matchLog") || "[]");
+
+    if (log.length === 0) {
+        alert("No matches logged yet.");
+        return;
+    }
+
+    let text = "Recent matches:\n\n";
+
+    log.slice(-10).reverse().forEach(entry => {
+        let date = new Date(entry.timestamp);
+        text += date.toLocaleString() + " — " +
+                entry.winner + " — " +
+                entry.score + "\n";
+    });
+
+    alert(text);
+};

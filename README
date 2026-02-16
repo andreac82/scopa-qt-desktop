@@ -90,6 +90,18 @@ Tested primarily on:
 
 ---
 
+### Forcing the UI language
+
+You can override the language when launching the application:
+
+```bash
+./scopa.app/Contents/MacOS/scopa --lang=it
+```
+
+This relies on Qt WebEngine's --lang flag and overrides the default system language detection.
+
+---
+
 ### Browser Mode (Cross-Platform)
 
 The core game is a static HTML + JavaScript application.

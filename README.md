@@ -92,7 +92,7 @@ Tested primarily on:
 
 ### Forcing the UI language
 
-You can override the language when launching the application:
+You can override the language (e.g. forcing Italian) when launching the application:
 
 ```bash
 ./scopa.app/Contents/MacOS/scopa --lang=it

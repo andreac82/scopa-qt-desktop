@@ -1552,9 +1552,10 @@ window.onload = function() {
     //language settings
     if (navigator.language && navigator.language != "en")
     {
+        var lang = navigator.language.substring(0, 2);
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = `locales/${navigator.language}.js`;
+        script.src = `locales/${lang}.js`;
         document.body.appendChild(script);
     }
 

@@ -1,6 +1,7 @@
 var locale =
 {
     "new-game": "Nuova partita...",
+    "match-history": "Ultime partite giocate",
     "settings": "Impostazioni",
     "help": "Aiuto",
     "about": "Informazioni",

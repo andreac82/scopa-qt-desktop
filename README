@@ -1,105 +1,173 @@
-This is the README file for Scopa.
 
-Copyright (C) 2016 Marco Scarpetta <marcoscarpetta02@gmail.com>
+# Scopa – Qt Desktop Fork (designed around macOS)
 
-Copying and distribution of this file, with or without modification,
-are permitted in any medium without royalty provided the copyright
-notice and this notice are preserved.
+This repository is a desktop-oriented fork of the original **Scopa** project
+by Marco Scarpetta (2016).
 
-GENERAL INFORMATIONS
-====================
+The original project implements the Italian card game
+[Scopa](https://en.wikipedia.org/wiki/Scopa) as a browser-based JavaScript
+application, with an optional Qt wrapper for desktop use.
 
-This software aims to provide an implementation of the famous Italian
-card game "Scopa" (https://en.wikipedia.org/wiki/Scopa). It is written
-in Javascript and can work in any modern browser.
-It provides 5 variations of the original game and 3 types of cards.
+This fork focuses on improving desktop usability, modern macOS compatibility,
+and adding persistent match tracking functionality.
 
-USAGE
-=====
+---
 
-Open the file index.html with a web browser. Since this software uses some new
-HTML features you must run it inside one of the following browsers:
- * Firefox 48 or any later version (Element.animate was introduced in version 48)
- * Chrome/Chromium 49 or any later version (css variables were introduced in version 49)
+## Origin
 
-Alternatively you can use the Qt application, to be built as described in the
-next section.
+Original project:
 
-BUILDING (Qt application)
-=========================
+- GNU Savannah project page:  
+  https://savannah.gnu.org/projects/scopa/
 
-The Qt application is very simple. It is just a browser window, based on
-Qt WebEngine, that opens the index.html file.
+- Original source repository:  
+  git://git.git.savannah.gnu.org/scopa.git
 
-It requires at least Qt 5.7.0, since the Qt WebEngine shipped with this version
-is based on Chromium 49.
+All credit for the original implementation belongs to  
+**Marco Scarpetta**.
 
-The following instructions refer to a GNU/Linux system.
+This fork preserves the original licensing and attribution.
 
-To build the application run:
+---
 
-  make
+## Improvements in This Fork
 
-You can use the following command to run the application:
+### macOS Desktop Compatibility
 
-  ./build/bin/scopa
+- Fixed Linux-specific resource path assumptions
+- Adjusted resource resolution for macOS `.app` bundle structure
+- Verified compatibility with Apple Silicon (arm64)
+- Improved startup behavior to avoid layout inconsistencies
 
-To install the application inside the DIR directory run:
+### Layout Stability Fix
 
-  make DESTDIR=DIR install
+- Identified inconsistent card resizing caused by mixed initial/dynamic sizing logic
+- Mitigated residual visual resizing bug by ensuring deterministic window initialization
 
-Then you can run it with the following command:
+### Persistent Match History
 
-  ./DIR/usr/bin/scopa
+- Implemented match logging using `localStorage`
+- Logs:
+  - Timestamp
+  - Winner
+  - Final score
+- Added in-app **Match History** menu item
+- Displays last 10 matches in reverse chronological order
+- Works in both Desktop Mode and Browser Mode
 
-Or simply run "scopa" if DIR/usr/bin is in your PATH variable.
+---
 
-BUILDING AND RUNNING THE SERVER
-===============================
+## Runtime Modes
 
-The online server requires node.js and the ws module (https://github.com/websockets/ws).
+This fork supports two ways of running the game.
 
-To install the server inside the DIR directory run:
+---
 
-  make DESTDIR=DIR server
+### Desktop Mode (Qt)
 
-Then you can run it with the following command:
+Build the Qt application:
 
-  node DIR/server.js
+    make
 
-LICENSING
-=========
+On macOS, this generates a `.app` bundle inside:
 
- * The jpg files in the "data/cards/Napoletane" directory are public domain
-   images available here: https://commons.wikimedia.org/wiki/Category:Naples_deck
+    qt-application/scopa.app
 
- * The jpg files in the "data/cards/Bergamasche" directory are cropped from
-   the public domain image available here: https://commons.wikimedia.org/wiki/File:Carte_bergamasche.jpg
-   
- * The jpg files in the "data/cards/Piacentine" directory are cropped from
-   the public domain image available here:
-   https://commons.wikimedia.org/wiki/File:Carte_piacentine_al_completo.jpg
-   
- * The jpg files in the "data/cards/Poker" and "data/cards/Poker_figures" directory are public domain
-   images available here: https://commons.wikimedia.org/wiki/Category:Playing_cards_set_by_Byron_Knoll
-   
- * All files inside the "server" directory are released under
-   the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-    
- * All other files are part of
-   Scopa, Copyright (C) 2016 Marco Scarpetta <marcoscarpetta02@gmail.com>
+You can launch it:
 
-   Scopa is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+- From Finder (and it can be copied in the "Applications" folder) 
+- Or via terminal:
 
-   Scopa is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+    ./qt-application/scopa.app/Contents/MacOS/scopa
 
-   You should have received a copy of the GNU General Public License
-   along with Scopa.  If not, see <http://www.gnu.org/licenses/>.
+Desktop mode uses Qt WebEngine (embedded Chromium).
+
+Tested primarily on:
+
+- macOS (Apple Silicon, Qt 5.15)
+
+> Linux desktop builds have not been fully revalidated after macOS-specific adjustments.
+
+---
+
+### Browser Mode (Cross-Platform)
+
+The core game is a static HTML + JavaScript application.
+
+It can be run on any OS (macOS, Linux, Windows) using a local web server.
+
+From the project root:
+
+    python3 -m http.server 8000
+
+Then open:
+
+    http://localhost:8000
+
+Browser mode:
+
+- Does not require Qt
+- Remains cross-platform
+- Includes match history functionality
+
+---
+
+## Technical Notes
+
+### Resource Path Adjustments
+
+The original Qt wrapper assumed a Linux installation layout:
+
+    /usr/bin/scopa
+    /usr/share/scopa/index.html
+
+This fork adjusts resource loading to work correctly inside the macOS
+`.app` bundle structure:
+
+    scopa.app/Contents/MacOS/
+
+---
+
+### Match Logging Implementation
+
+Match logging is implemented entirely in JavaScript.
+
+When a match ends:
+
+- The `"winner"` event is detected
+- The final score is extracted from the summary table
+- A structured entry is appended to:
+
+    localStorage["matchLog"]
+
+Each entry includes:
+
+- ISO timestamp
+- Winner name
+- Final score
+
+Storage size remains small and practical even after hundreds of matches.
+
+---
+
+## Purpose of This Fork
+
+This fork was created to:
+
+- Improve desktop reliability on macOS
+- Explore cross-platform debugging in a mixed C++ / JavaScript environment
+- Enhance user experience with persistent match tracking
+- Maintain compatibility with the original browser-based architecture
+
+It preserves the spirit and functionality of the original project
+while improving desktop usability.
+
+---
+
+## License
+
+This fork remains licensed under the  
+**GNU General Public License v3.0**,  
+in accordance with the original project.
+
+See the `LICENSE` file for full details.

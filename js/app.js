@@ -511,6 +511,10 @@ ScopaApplication = function()
     document.querySelector("#match-log-item").addEventListener("click", function() {
         showMatchLog();
     });
+
+    document.querySelector("#start-new-tie").addEventListener("click", function() {
+        startNewTie();
+    });
     
     document.querySelector("#online-item").addEventListener("click", function(event) {
         menu.hidden = true;
@@ -1572,7 +1576,17 @@ window.showMatchLog = function() {
 
     let text = "Recent matches:\n\n";
 
-    log.slice(-10).reverse().forEach(entry => {
+    let startIndex = Math.max(0, log.length - 10);
+
+    // Expand backwards until we reach a "New Tie"
+    while (
+        startIndex > 0 &&
+        !log[startIndex].winner.includes("New Tie")
+    ) {
+        startIndex--;
+    }
+
+    log.slice(startIndex).reverse().forEach(entry => {
         let date = new Date(entry.timestamp);
         text += date.toLocaleString() + " — " +
                 entry.winner + " — " +
@@ -1580,4 +1594,31 @@ window.showMatchLog = function() {
     });
 
     alert(text);
+};
+
+window.startNewTie = function() {
+
+    let n = parseInt(prompt("How many matches already played in this tie?", "0"));
+
+    if (isNaN(n) || n < 0) {
+        alert("Invalid number");
+        return;
+    }
+
+    const entry = {
+        timestamp: new Date().toISOString(),
+        winner: "New Tie",
+        score: ""
+    };
+
+    let log = JSON.parse(localStorage.getItem("matchLog") || "[]");
+
+    // compute insertion index
+    let index = Math.max(0, log.length - n);
+
+    log.splice(index, 0, entry);
+
+    localStorage.setItem("matchLog", JSON.stringify(log));
+
+    alert("New tie started");
 };

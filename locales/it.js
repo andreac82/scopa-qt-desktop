@@ -2,6 +2,7 @@ var locale =
 {
     "new-game": "Nuova partita...",
     "match-history": "Ultime partite giocate",
+    "new-tie": "Inizia una nuova sfida",
     "settings": "Impostazioni",
     "help": "Aiuto",
     "about": "Informazioni",

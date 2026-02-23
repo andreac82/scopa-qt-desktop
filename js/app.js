@@ -418,6 +418,8 @@ ScopaApplication = function()
     
     this.matchTeams = null;
     this.localPlayer = null;
+
+    this.currentMatchHistory = [];
     
     this.onlineMatch = new OnlineMatch();
     this.onlineGames = null;
@@ -510,6 +512,20 @@ ScopaApplication = function()
 
     document.querySelector("#match-log-item").addEventListener("click", function() {
         showMatchLog();
+    });
+
+    document.querySelector("#current-match-history-item").addEventListener("click", function() {
+
+        let text = "";
+
+        app.currentMatchHistory.slice().reverse().forEach(entry => {
+            text += entry.score + "\n";
+        });
+
+        if (!text)
+            text = "No rounds played yet.";
+
+        alert(text);
     });
 
     document.querySelector("#start-new-tie").addEventListener("click", function() {
@@ -1065,6 +1081,7 @@ ScopaApplication.prototype.onStartGame = function()
     var username = document.getElementById("userName").value;
     
     this.match = new variant.class();
+    this.currentMatchHistory = [];
     
     var message;
     var teams;
@@ -1369,6 +1386,20 @@ ScopaApplication.prototype.analyze = function(response)
             
             var continue_btn = document.querySelector("#continue");
             continue_btn.parentNode.hidden = false;
+
+            let totalRow = document.querySelector("#total");
+
+            if (totalRow && totalRow.children.length >= 3) {
+
+                let roundScore =
+                    totalRow.children[1].textContent + "-" +
+                    totalRow.children[2].textContent;
+
+                app.currentMatchHistory.push({
+                    timestamp: new Date().toISOString(),
+                    score: roundScore
+                });
+            }
             
             this.showDialog("summary");
             

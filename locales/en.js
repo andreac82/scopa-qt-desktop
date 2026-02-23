@@ -2,6 +2,7 @@ var locale =
 {
 "new-game": "New game...",
 "match-history": "Match history",
+"current-match-history": "Current match history",
 "new-tie": "Start a new tie",
 "settings": "Settings",
 "cronology": "Cronology",

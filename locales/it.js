@@ -4,6 +4,8 @@ var locale =
     "match-history": "Ultime partite giocate",
     "current-match-history": "Cronologia del match corrente",
     "new-tie": "Inizia una nuova sfida",
+    "add-to-history": "Add a match to the history",
+    "delete-event": "Delete event from history",
     "settings": "Impostazioni",
     "help": "Aiuto",
     "about": "Informazioni",

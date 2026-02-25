@@ -531,6 +531,14 @@ ScopaApplication = function()
     document.querySelector("#start-new-tie").addEventListener("click", function() {
         startNewTie();
     });
+
+    document.querySelector("#delete-event").addEventListener("click", function() {
+        deleteHistoryEvent();
+    });
+
+    document.querySelector("#add-to-history").addEventListener("click", function() {
+        addMatchToHistory();
+    });
     
     document.querySelector("#online-item").addEventListener("click", function(event) {
         menu.hidden = true;
@@ -1652,4 +1660,70 @@ window.startNewTie = function() {
     localStorage.setItem("matchLog", JSON.stringify(log));
 
     alert("New tie started");
+};
+
+
+window.deleteHistoryEvent = function() {
+
+    let n = parseInt(prompt("What is the index of the event to be deleted? (start = 1)", "1"));
+
+    if (isNaN(n) || n < 1) {
+        alert("Invalid number");
+        return;
+    }
+
+    n = n - 1;
+
+    let log = JSON.parse(localStorage.getItem("matchLog") || "[]");
+
+    // compute deletion index
+    let index = Math.max(0, log.length - n);
+
+    log.splice(index - 1, 1);
+
+    localStorage.setItem("matchLog", JSON.stringify(log));
+
+    alert("Event deleted");
+};
+
+window.addMatchToHistory = function() {
+
+    let log = JSON.parse(localStorage.getItem("matchLog") || "[]");
+
+    let n = parseInt(prompt("What is the index of the match to be added? (start = 1)", "1"));
+
+    if (isNaN(n) || n < 1) {
+        alert("Invalid number");
+        return;
+    }
+
+    n = n - 1;
+
+    // compute insertion index
+    let index = Math.max(0, log.length - n);
+
+    default_timestamp = new Date().toISOString();
+
+    let timestamp = prompt("What is the timestamp of the event to be added?", default_timestamp);
+
+    let winner = prompt("Who is the winner of the match to be added?", "");
+
+    let score = prompt("What is the score of the event to be added?", "");
+
+    if (winner === "") {
+        alert("Invalid winner name");
+        return;
+    }
+
+    const entry = {
+        timestamp: timestamp,
+        winner: winner,
+        score: score
+    };
+
+    log.splice(index, 0, entry);
+
+    localStorage.setItem("matchLog", JSON.stringify(log));
+
+    alert("New match added to the history");
 };

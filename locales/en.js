@@ -4,6 +4,8 @@ var locale =
 "match-history": "Match history",
 "current-match-history": "Current match history",
 "new-tie": "Start a new tie",
+"add-to-history": "Add a match to the history",
+"delete-event": "Delete event from history",
 "settings": "Settings",
 "cronology": "Cronology",
 "help": "Help",

@@ -1603,6 +1603,7 @@ window.onload = function() {
     }
 
     app.showDialog("new-game");
+    showMatchLog();
 }
 
 window.showMatchLog = function() {

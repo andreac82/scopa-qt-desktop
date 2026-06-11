@@ -1618,7 +1618,6 @@ window.showMatchLog = function() {
 
     let startIndex = Math.max(0, log.length - 10);
 
-    // Expand backwards until we reach a "New Tie"
     while (
         startIndex > 0 &&
         !log[startIndex].winner.includes("New Tie")
@@ -1632,6 +1631,55 @@ window.showMatchLog = function() {
                 entry.winner + " — " +
                 entry.score + "\n";
     });
+
+    let totals = {};
+
+    log.forEach(entry => {
+        if (!entry.winner.includes("New Tie")) {
+            totals[entry.winner] = (totals[entry.winner] || 0) + 1;
+        }
+    });
+
+    text += "\n--- Stats ---\n";
+
+    Object.keys(totals).forEach(winner => {
+        text += winner + ": " + totals[winner] + " wins\n";
+    });
+
+    const DAY_BOUNDARY_HOURS = 5;
+    // Treat matches played before 5 AM as part of the previous day,
+    // because late-night sessions often belong mentally to "yesterday".
+
+    let todayTies = 0;
+    let todayMatches = 0;
+
+    let shiftedToday = new Date();
+    shiftedToday.setHours(shiftedToday.getHours() - DAY_BOUNDARY_HOURS);
+
+    let todayYear = shiftedToday.getFullYear();
+    let todayMonth = shiftedToday.getMonth();
+    let todayDate = shiftedToday.getDate();
+
+    for (let i = log.length - 1; i >= 0; i--) {
+        let shiftedEntryDate = new Date(log[i].timestamp);
+        shiftedEntryDate.setHours(shiftedEntryDate.getHours() - DAY_BOUNDARY_HOURS);
+
+        let isToday =
+            shiftedEntryDate.getFullYear() === todayYear &&
+            shiftedEntryDate.getMonth() === todayMonth &&
+            shiftedEntryDate.getDate() === todayDate;
+
+        if (!isToday)
+            break;
+
+        if (log[i].winner.includes("New Tie"))
+            todayTies++;
+        else
+            todayMatches++;
+    }
+
+    text += "\nYou played " + todayTies + " ties and " +
+            todayMatches + " matches today.\n";
 
     alert(text);
 };

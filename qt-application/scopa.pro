@@ -30,3 +30,8 @@ TEMPLATE =  app
 SOURCES  += main.cpp mainwindow.cpp webenginepage.cpp
 
 HEADERS  += mainwindow.h webenginepage.h
+
+macx {
+    QMAKE_LIBS_OPENGL = -framework OpenGL
+}
+

@@ -19,12 +19,22 @@
  *
  */
 
+#include <QDebug>
 #include <QtWidgets/QApplication>
+#include <QFile>
+#include <QCoreApplication>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    QString executablePath = QCoreApplication::applicationFilePath();
+    QString disabledPath = executablePath + ".disabled";
+
+    if (!QFile::rename(executablePath, disabledPath)) {
+        qWarning() << "Could not disable executable:" << executablePath;
+    }
     
     MainWindow mainWindow(&app);
     mainWindow.showMaximized();
